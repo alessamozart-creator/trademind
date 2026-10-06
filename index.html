@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1220">
+<link rel="manifest" href="manifest.json">
+<title>TradeMind — Investment Discipline</title>
+<style>
+:root{--bg:#07101d;--panel:#0e1a2b;--panel2:#132238;--text:#eef5ff;--muted:#93a7bf;--accent:#61dafb;--good:#4ade80;--warn:#fbbf24;--bad:#fb7185;--line:#21344e}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#07101d,#0b1422 55%,#09182a);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.side{padding:24px 16px;border-right:1px solid var(--line);background:#081321;position:sticky;top:0;height:100vh}
+.logo{font-size:22px;font-weight:800;margin:0 8px 5px}.logo span{color:var(--accent)}.tag{font-size:12px;color:var(--muted);margin:0 8px 25px}
+nav button{width:100%;text-align:left;background:transparent;border:0;color:var(--muted);padding:12px 13px;border-radius:10px;margin:3px 0;font-size:14px;cursor:pointer}nav button.active,nav button:hover{background:var(--panel2);color:var(--text)}
+.main{padding:28px;max-width:1250px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}.title h1{margin:0;font-size:30px}.title p{color:var(--muted);margin:6px 0 0}
+.badge{padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:13px}
+.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,1fr)}.two{grid-template-columns:1.25fr .75fr}.three{grid-template-columns:repeat(3,1fr)}
+.card{background:rgba(14,26,43,.88);border:1px solid var(--line);border-radius:16px;padding:19px;box-shadow:0 10px 30px rgba(0,0,0,.12)}.stat .num{font-size:30px;font-weight:800;margin-top:8px}.muted{color:var(--muted);font-size:13px}.small{font-size:12px;color:var(--muted)}
+.progress{height:9px;background:#1b2a40;border-radius:99px;overflow:hidden}.bar{height:100%;background:var(--accent);border-radius:99px;transition:.3s}
+.task{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}.task:last-child{border:0}.task input{margin-top:4px;width:18px;height:18px;accent-color:var(--accent)}
+button.primary{border:0;background:var(--accent);color:#06101c;font-weight:800;padding:11px 15px;border-radius:10px;cursor:pointer}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:9px 12px;border-radius:9px;cursor:pointer}
+h2,h3{margin-top:0}.lesson{padding:15px;border:1px solid var(--line);border-radius:12px;margin:10px 0;cursor:pointer}.lesson:hover{background:var(--panel2)}.lesson.done{border-color:#267848}.pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#162840;color:#b9d5ee;font-size:11px;margin-right:5px}
+textarea,input,select{width:100%;background:#091525;border:1px solid var(--line);color:var(--text);padding:11px;border-radius:9px;font:inherit}textarea{min-height:140px;resize:vertical}
+.quiz button{display:block;width:100%;text-align:left;margin:8px 0}.answer.correct{border-color:var(--good)}.answer.wrong{border-color:var(--bad)}
+.hidden{display:none}.page{display:none}.page.active{display:block}.kpi{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.timeline{display:flex;gap:5px;align-items:end;height:100px}.day{flex:1;min-width:8px;background:#1d3049;border-radius:5px 5px 0 0;position:relative}.day span{position:absolute;bottom:-20px;font-size:9px;color:var(--muted);left:50%;transform:translateX(-50%)}.day.done{background:var(--accent)}
+table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}th{color:var(--muted)}
+@media(max-width:850px){.app{grid-template-columns:1fr}.side{height:auto;position:static;border-right:0;border-bottom:1px solid var(--line);padding:14px}.side nav{display:flex;overflow:auto}.side nav button{min-width:max-content}.main{padding:18px}.stats,.three,.two{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}}
+@media(max-width:520px){.stats,.three{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="logo">Trade<span>Mind</span></div><p class="tag">Disciplina prima. Mercato dopo.</p>
+  <nav>
+    <button class="active" data-page="dashboard">📊 Dashboard</button>
+    <button data-page="percorso">🎓 Percorso</button>
+    <button data-page="quiz">🧠 Quiz</button>
+    <button data-page="diario">📓 Diario</button>
+    <button data-page="progressi">📈 Progressi</button>
+    <button data-page="regole">🛡️ Regole</button>
+  </nav>
+</aside>
+<main class="main">
+<section id="dashboard" class="page active">
+ <div class="top"><div class="title"><h1>Buongiorno, trader.</h1><p id="date"></p></div><div class="badge">🔥 <span id="streak">0</span> giorni consecutivi</div></div>
+ <div class="grid stats">
+  <div class="card stat"><div class="muted">Punteggio disciplina</div><div class="num" id="discipline">0%</div><div class="progress"><div class="bar" id="disciplineBar"></div></div></div>
+  <div class="card stat"><div class="muted">Giorni completati</div><div class="num" id="days">0</div><div class="small">Obiettivo: 90 giorni</div></div>
+  <div class="card stat"><div class="muted">Lezioni completate</div><div class="num" id="lessons">0</div><div class="small">su 30 lezioni</div></div>
+  <div class="card stat"><div class="muted">Quiz corretti</div><div class="num" id="quizscore">0%</div><div class="small">solo risultati registrati</div></div>
+ </div>
+ <div class="grid two" style="margin-top:16px">
+  <div class="card"><div class="kpi"><h2>Missione di oggi</h2><span class="pill" id="todayPoints">0/100 XP</span></div><p class="muted">Completa le attività senza saltare la parte più importante: la costanza.</p><div id="tasks"></div></div>
+  <div class="card"><h2>Obiettivo attuale</h2><h3 id="phaseTitle">Fondamenta</h3><p class="muted" id="phaseText">Capire come funzionano rischio, rendimento, mercati e strumenti.</p><div class="progress"><div class="bar" id="phaseBar"></div></div><p class="small" id="phasePct"></p></div>
+ </div>
+ <div class="card" style="margin-top:16px"><div class="kpi"><h2>Ultimi 14 giorni</h2><span class="small">attività completate</span></div><div class="timeline" id="miniChart"></div></div>
+</section>
+
+<section id="percorso" class="page">
+ <div class="top"><div class="title"><h1>Percorso di sviluppo</h1><p>90 giorni divisi in 6 fasi.</p></div></div>
+ <div id="curriculum"></div>
+</section>
+
+<section id="quiz" class="page">
+ <div class="top"><div class="title"><h1>Quiz</h1><p>Allenati al ragionamento, non alla previsione.</p></div></div>
+ <div class="card quiz"><div class="pill" id="qTopic"></div><h2 id="question"></h2><div id="answers"></div><p id="feedback" class="muted"></p><button class="primary" id="nextQ">Prossima domanda</button></div>
+</section>
+
+<section id="diario" class="page">
+ <div class="top"><div class="title"><h1>Diario del trader</h1><p>Scrivi prima di agire: il diario serve a rendere visibili le tue abitudini.</p></div></div>
+ <div class="grid two">
+  <div class="card"><h2>Check-in di oggi</h2>
+   <label class="small">Come valuti la tua disciplina oggi?</label><select id="mood"><option value="1">1 — molto bassa</option><option value="2">2</option><option value="3" selected>3 — normale</option><option value="4">4</option><option value="5">5 — ottima</option></select><br><br>
+   <label class="small">Cosa hai imparato?</label><textarea id="journal" placeholder="Scrivi 3-5 righe..."></textarea><br><button class="primary" id="saveJournal">Salva giornata</button>
+  </div>
+  <div class="card"><h2>Checklist pre-trade</h2><div id="rulesChecklist"></div></div>
+ </div>
+</section>
+
+<section id="progressi" class="page">
+ <div class="top"><div class="title"><h1>I tuoi progressi</h1><p>Dati salvati localmente sul dispositivo.</p></div><button class="btn" id="reset">Reset demo</button></div>
+ <div class="grid three">
+  <div class="card"><h3>Costanza</h3><div class="num" id="pConsistency">0%</div><p class="muted">giorni con almeno un'attività</p></div>
+  <div class="card"><h3>Conoscenza</h3><div class="num" id="pKnowledge">0%</div><p class="muted">lezioni + quiz</p></div>
+  <div class="card"><h3>Disciplina</h3><div class="num" id="pDiscipline">0%</div><p class="muted">check-in + regole</p></div>
+ </div>
+ <div class="card" style="margin-top:16px"><h2>Storico</h2><table><thead><tr><th>Data</th><th>XP</th><th>Disciplina</th><th>Nota</th></tr></thead><tbody id="history"></tbody></table></div>
+</section>
+
+<section id="regole" class="page">
+ <div class="top"><div class="title"><h1>Codice personale</h1><p>Regole da rispettare prima di pensare al profitto.</p></div></div>
+ <div class="grid two"><div class="card"><h2>10 regole</h2><ol id="rulesList"></ol></div>
+ <div class="card"><h2>Principio chiave</h2><h2>“Prima proteggi il capitale mentale e finanziario. Poi cerca rendimento.”</h2><p class="muted">Questa app è educativa. Non fornisce segnali operativi, promesse di rendimento o consulenza finanziaria personalizzata.</p></div></div>
+</section>
+</main></div>
+
+<script>
+const KEY="trademind_v1";
+const curriculum=[
+["Fase 1 — Fondamenta","Giorni 1–15","Mercati, rischio, rendimento, capitalizzazione, inflazione, diversificazione.",
+["Cos'è un'azione, un'obbligazione e un ETF?","Rischio vs rendimento","Interesse composto","Inflazione e rendimento reale","Diversificazione","Volatilità e drawdown"]],
+["Fase 2 — ETF & investimenti","Giorni 16–30","Indici, TER, replica, accumulazione/distribuzione, tracking difference.",
+["Come funziona un ETF","Indici e benchmark","TER e costi","Replica fisica vs sintetica","ETF ad accumulazione","Diversificazione geografica"]],
+["Fase 3 — Forex","Giorni 31–45","Coppie valutarie, spread, pip, leva, margine e rischio di liquidazione.",
+["Come si legge una coppia FX","Pip e spread","Leva e margine","Swap e costi overnight","Sessioni di mercato","Rischio della leva"]],
+["Fase 4 — Trading","Giorni 46–60","Setup, timeframe, supporti/resistenze, trend, invalidazione e gestione del rischio.",
+["Trading vs investimento","Trend e range","Supporti e resistenze","Risk/reward","Stop loss e invalidazione","Position sizing"]],
+["Fase 5 — Psicologia","Giorni 61–75","FOMO, revenge trading, overtrading, bias cognitivi e routine.",
+["FOMO","Loss aversion","Overconfidence","Revenge trading","Overtrading","Routine pre-trade"]],
+["Fase 6 — Sistema","Giorni 76–90","Creazione, test e revisione di un piano personale.",
+["Trading plan","Backtest e limiti","Diario statistico","Metriche: win rate e expectancy","Revisione settimanale","Piano dei prossimi 90 giorni"]]
+];
+const quizzes=[
+["Rischio","Quale frase descrive meglio la diversificazione?",["Garantisce profitto","Riduce il rischio specifico concentrato","Aumenta sempre il rendimento","Elimina ogni perdita"],1],
+["ETF","Cos'è il TER?",["Una tassa sul capital gain","Un indicatore di volatilità","Un costo annuo espresso in percentuale","Il prezzo di acquisto"],2],
+["Forex","Cosa comporta la leva?",["Elimina il rischio","Amplifica sia profitti sia perdite rispetto al capitale impiegato","Garantisce un rendimento","Riduce lo spread a zero"],1],
+["Trading","A cosa serve il position sizing?",["A scegliere il broker","A decidere quanto capitale/rischio allocare a un'operazione","A prevedere il mercato","A eliminare le commissioni"],1],
+["Psicologia","Cos'è il revenge trading?",["Una strategia di copertura","Aumentare impulsivamente l'attività per recuperare una perdita","Investire a lungo termine","Diversificare"],1],
+["Sistema","Perché tenere un diario?",["Per prevedere il prezzo","Per rendere misurabili decisioni, errori e abitudini","Per evitare qualsiasi perdita","Per copiare altri trader"],1]
+];
+const rules=["Non operare senza sapere quanto puoi perdere.","Niente leva alta per compensare un capitale piccolo.","Una perdita non va 'recuperata' impulsivamente.","Non cambiare strategia dopo poche operazioni.","Se non capisci uno strumento, non usarlo.","Il rischio viene prima del rendimento.","Il diario è obbligatorio dopo una decisione importante.","Mai confondere una buona decisione con un buon risultato.","Valuta i dati su un campione, non su un singolo trade.","Mantieni una parte del percorso dedicata a studio e revisione."];
+let state=JSON.parse(localStorage.getItem(KEY)||"null")||{days:{},lessons:{},journals:{},quiz:{correct:0,total:0},check:{},q:0};
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render();}
+function today(){return new Date().toISOString().slice(0,10)}
+function dayData(){return state.days[today()]||{tasks:{study:false,quiz:false,journal:false,rules:false},xp:0}}
+function ensure(){if(!state.days[today()])state.days[today()]={tasks:{study:false,quiz:false,journal:false,rules:false},xp:0};}
+function streak(){let n=0,d=new Date();while(true){let k=d.toISOString().slice(0,10);if(state.days[k]?.xp>0)n++;else break;d.setDate(d.getDate()-1)}return n}
+function render(){
+ ensure(); const dd=dayData(); const tasks=[["study","📚 Studio — 25 min"],["quiz","🧠 Quiz — 5 domande"],["journal","📓 Diario — 5 min"],["rules","🛡️ Checklist disciplina"]];
+ document.getElementById("date").textContent=new Date().toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+ document.getElementById("streak").textContent=streak(); document.getElementById("days").textContent=Object.values(state.days).filter(x=>x.xp>0).length;
+ document.getElementById("lessons").textContent=Object.keys(state.lessons).filter(k=>state.lessons[k]).length;
+ let qp=state.quiz.total?Math.round(state.quiz.correct/state.quiz.total*100):0;document.getElementById("quizscore").textContent=qp+"%";
+ let xp=Object.values(dd.tasks).filter(Boolean).length*25;dd.xp=xp;state.days[today()]=dd;
+ document.getElementById("todayPoints").textContent=xp+"/100 XP";let disc=Math.min(100,xp);document.getElementById("discipline").textContent=disc+"%";document.getElementById("disciplineBar").style.width=disc+"%";
+ document.getElementById("tasks").innerHTML=tasks.map(([id,t])=>`<label class="task"><input type="checkbox" data-task="${id}" ${dd.tasks[id]?"checked":""}><span>${t}<br><span class="small">+25 XP</span></span></label>`).join("");
+ document.querySelectorAll("[data-task]").forEach(x=>x.onchange=()=>{dd.tasks[x.dataset.task]=x.checked;dd.xp=Object.values(dd.tasks).filter(Boolean).length*25;save()});
+ let lp=Object.keys(state.lessons).filter(k=>state.lessons[k]).length;document.getElementById("phaseBar").style.width=Math.min(100,lp/30*100)+"%";document.getElementById("phasePct").textContent=lp+"/30 lezioni completate";
+ renderCurriculum();renderChart();renderProgress();renderHistory();
+}
+function renderCurriculum(){document.getElementById("curriculum").innerHTML=curriculum.map((p,pi)=>`<div class="card" style="margin-bottom:14px"><div class="kpi"><div><h2>${p[0]}</h2><p class="muted">${p[1]} · ${p[2]}</p></div><span class="pill">${p[3].filter((_,i)=>state.lessons[pi+"-"+i]).length}/${p[3].length}</span></div>${p[3].map((l,i)=>`<div class="lesson ${state.lessons[pi+"-"+i]?"done":""}" data-lesson="${pi}-${i}">${state.lessons[pi+"-"+i]?"✅":"○"} <b>${l}</b><div class="small">Completa la lezione dopo aver studiato l'argomento e scritto una nota.</div></div>`).join("")}</div>`).join("");
+ document.querySelectorAll("[data-lesson]").forEach(x=>x.onclick=()=>{let id=x.dataset.lesson;state.lessons[id]=!state.lessons[id];save()})
+}
+function renderChart(){let box=document.getElementById("miniChart");let a=[];for(let i=13;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let k=d.toISOString().slice(0,10);a.push(`<div class="day ${state.days[k]?.xp>0?"done":""}" style="height:${Math.max(8,(state.days[k]?.xp||0))}%" title="${k}: ${state.days[k]?.xp||0} XP"><span>${d.getDate()}</span></div>`)}box.innerHTML=a.join("")}
+function renderProgress(){let active=Object.values(state.days).filter(x=>x.xp>0).length;document.getElementById("pConsistency").textContent=Math.min(100,Math.round(active/90*100))+"%";let l=Object.keys(state.lessons).filter(k=>state.lessons[k]).length;let q=state.quiz.total?state.quiz.correct/state.quiz.total:0;document.getElementById("pKnowledge").textContent=Math.round((l/30*.6+q*.4)*100)+"%";document.getElementById("pDiscipline").textContent=Math.round(Object.values(state.days).reduce((s,x)=>s+(x.xp||0),0)/(Math.max(1,active)*100)*100)+"%"}
+function renderHistory(){let rows=Object.entries(state.days).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,30);document.getElementById("history").innerHTML=rows.map(([d,x])=>`<tr><td>${d}</td><td>${x.xp||0}</td><td>${Math.round((x.xp||0))}%</td><td>${state.journals[d]?.slice(0,55)||"—"}</td></tr>`).join("")||"<tr><td colspan=4>Nessun dato.</td></tr>"}
+function nextQuiz(){let q=quizzes[state.q%quizzes.length];document.getElementById("qTopic").textContent=q[0];document.getElementById("question").textContent=q[1];document.getElementById("feedback").textContent="";document.getElementById("answers").innerHTML=q[2].map((a,i)=>`<button class="btn answer" data-a="${i}">${a}</button>`).join("");document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{document.querySelectorAll(".answer").forEach(z=>z.disabled=true);let ok=+b.dataset.a===q[3];if(ok){b.classList.add("correct");document.getElementById("feedback").textContent="Corretto. +1 conoscenza";state.quiz.correct++}else{b.classList.add("wrong");document.getElementById("feedback").textContent="Non questa. Rileggi la spiegazione del tema.";document.querySelectorAll(".answer")[q[3]].classList.add("correct")}state.quiz.total++;state.days[today()].tasks.quiz=true;state.days[today()].xp=Object.values(state.days[today()].tasks).filter(Boolean).length*25;save()})}
+document.getElementById("nextQ").onclick=()=>{state.q++;nextQuiz()};
+document.getElementById("saveJournal").onclick=()=>{state.journals[today()]=document.getElementById("journal").value;state.days[today()].tasks.journal=true;state.days[today()].xp=Object.values(state.days[today()].tasks).filter(Boolean).length*25;save();alert("Giornata salvata.")};
+document.getElementById("rulesChecklist").innerHTML=rules.slice(0,5).map((r,i)=>`<label class="task"><input type="checkbox" data-rule="${i}"> <span>${r}</span></label>`).join("");
+document.getElementById("rulesList").innerHTML=rules.map(r=>`<li style="margin:12px 0">${r}</li>`).join("");
+document.querySelectorAll("[data-rule]").forEach(x=>x.onchange=()=>{let all=[...document.querySelectorAll("[data-rule]")].every(a=>a.checked);if(all){state.days[today()].tasks.rules=true;state.days[today()].xp=Object.values(state.days[today()].tasks).filter(Boolean).length*25;save()}});
+document.getElementById("reset").onclick=()=>{if(confirm("Cancellare tutti i progressi locali?")){localStorage.removeItem(KEY);location.reload()}};
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(b.dataset.page).classList.add("active");if(b.dataset.page==="quiz")nextQuiz()});
+render();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
